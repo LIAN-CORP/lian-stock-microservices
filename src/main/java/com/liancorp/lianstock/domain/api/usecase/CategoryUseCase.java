@@ -12,7 +12,7 @@ public class CategoryUseCase implements ICategoryServicePort {
     private final ICategoryPersistencePort categoryPersistencePort;
 
     @Override
-    public Mono<Void> saveCategory(Category category) {
+    public Mono<Category> saveCategory(Category category) {
         return categoryPersistencePort.saveCategory(category);
     }
 }
