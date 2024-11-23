@@ -2,11 +2,15 @@ package com.liancorp.lianstock.application.mapper;
 
 import com.liancorp.lianstock.application.dto.request.CategoryRequest;
 import com.liancorp.lianstock.domain.model.Category;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface CategoryMapper {
-    @Mapping(target = "id", ignore = true)
-    Category toModelFromRequest(CategoryRequest categoryRequest);
+@Component
+public class CategoryMapper {
+    public Category toModelFromRequest(CategoryRequest request) {
+        var category = new Category();
+        category.setId(null);
+        category.setName(request.name());
+        category.setDescription(request.description());
+        return category;
+    }
 }
