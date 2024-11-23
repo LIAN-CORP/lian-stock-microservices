@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface ICategoryPersistencePort {
     Mono<Category> saveCategory(Category category);
+    Mono<Boolean> categoryExistsByName(String name);
 }
