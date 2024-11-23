@@ -16,7 +16,7 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
 
     public Mono<Category> createCategory(Mono<CategoryRequest> categoryRequest) {
-        return categoryRequest.flatMap(categoryFlatMap -> Mono.just(categoryMapper.toModelFromRequest(categoryFlatMap)))
+        return categoryRequest.map(categoryMapper::toModelFromRequest)
                 .flatMap(categoryServicePort::saveCategory);
     }
 
