@@ -6,6 +6,7 @@ import com.liancorp.lianstock.domain.model.Category;
 import com.liancorp.lianstock.domain.model.ContentPage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -30,8 +31,8 @@ public class CategoryController {
             @RequestParam(defaultValue = "false") boolean isAsc
     ) {
         return Mono.just(
-                ResponseEntity.ok(categoryService.findAllCategories(page, size, sortBy, isAsc))
-        );
+                ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(categoryService.findAllCategories(page, size, sortBy, isAsc))
+        ).defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
 }
