@@ -1,6 +1,7 @@
 package com.liancorp.lianstock.infrastructure;
 
 import com.liancorp.lianstock.domain.model.Category;
+import com.liancorp.lianstock.domain.model.ContentPage;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.adapter.CategoryAdapter;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.entity.CategoryEntity;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.mapper.ICategoryEntityMapper;
@@ -10,9 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -67,6 +73,82 @@ class CategoryAdapterTest {
                 .verifyComplete();
 
         verify(categoryRepository, times(1)).existsByName(name);
+    }
+
+    @Test
+    void shouldFindAllCategoriesAscendingSuccessfully() {
+        //Arrange
+        int page = 0;
+        int size = 5;
+        String sortBy = "name";
+        boolean isAsc = true;
+        Sort sort = isAsc ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        CategoryEntity categoryEntity = new CategoryEntity(UUID.randomUUID(), "test name", "test description");
+        Category category = new Category(categoryEntity.getId(), categoryEntity.getName(), categoryEntity.getDescription());
+        List<CategoryEntity> categoryEntities = List.of(categoryEntity);
+        List<Category> categories = List.of(category);
+        when(categoryRepository.findAllBy(pageable)).thenReturn(Flux.fromIterable(categoryEntities));
+        when(categoryRepository.count()).thenReturn(Mono.just(1L));
+        when(categoryEntityMapper.toModelFromEntity(categoryEntity)).thenReturn(category);
+
+        //Act
+        Mono<ContentPage<Category>> result = categoryAdapter.findAllCategories(page, size, sortBy, isAsc);
+
+        //Assert
+        StepVerifier.create(result)
+                .expectNextMatches(contentPage ->
+                        contentPage.getTotalPage() == 1 &&
+                                contentPage.getTotalElements() == 1 &&
+                                contentPage.getPageNumber() == page &&
+                                contentPage.getPageSize() == size &&
+                                contentPage.isFirst() &&
+                                contentPage.isLast() &&
+                                contentPage.getContent().equals(categories)
+                )
+                .verifyComplete();
+
+        verify(categoryRepository, times(1)).findAllBy(pageable);
+        verify(categoryRepository, times(1)).count();
+        verify(categoryEntityMapper, times(1)).toModelFromEntity(categoryEntity);
+    }
+
+    @Test
+    void shouldFindAllCategoriesDescendingSuccessfully() {
+        //Arrange
+        int page = 0;
+        int size = 5;
+        String sortBy = "name";
+        boolean isAsc = false;
+        Sort sort = isAsc ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        CategoryEntity categoryEntity = new CategoryEntity(UUID.randomUUID(), "test name", "test description");
+        Category category = new Category(categoryEntity.getId(), categoryEntity.getName(), categoryEntity.getDescription());
+        List<CategoryEntity> categoryEntities = List.of(categoryEntity);
+        List<Category> categories = List.of(category);
+        when(categoryRepository.findAllBy(pageable)).thenReturn(Flux.fromIterable(categoryEntities));
+        when(categoryRepository.count()).thenReturn(Mono.just(1L));
+        when(categoryEntityMapper.toModelFromEntity(categoryEntity)).thenReturn(category);
+
+        //Act
+        Mono<ContentPage<Category>> result = categoryAdapter.findAllCategories(page, size, sortBy, isAsc);
+
+        //Assert
+        StepVerifier.create(result)
+                .expectNextMatches(contentPage ->
+                        contentPage.getTotalPage() == 1 &&
+                                contentPage.getTotalElements() == 1 &&
+                                contentPage.getPageNumber() == page &&
+                                contentPage.getPageSize() == size &&
+                                contentPage.isFirst() &&
+                                contentPage.isLast() &&
+                                contentPage.getContent().equals(categories)
+                )
+                .verifyComplete();
+
+        verify(categoryRepository, times(1)).findAllBy(pageable);
+        verify(categoryRepository, times(1)).count();
+        verify(categoryEntityMapper, times(1)).toModelFromEntity(categoryEntity);
     }
 
 }
