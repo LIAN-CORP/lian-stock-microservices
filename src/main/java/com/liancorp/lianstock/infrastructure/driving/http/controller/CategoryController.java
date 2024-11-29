@@ -3,12 +3,12 @@ package com.liancorp.lianstock.infrastructure.driving.http.controller;
 import com.liancorp.lianstock.application.dto.request.CategoryRequest;
 import com.liancorp.lianstock.application.services.CategoryService;
 import com.liancorp.lianstock.domain.model.Category;
+import com.liancorp.lianstock.domain.model.ContentPage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -21,6 +21,18 @@ public class CategoryController {
     @PostMapping
     public Mono<Category> createCategory(@Valid @RequestBody Mono<CategoryRequest> request) {
         return this.categoryService.createCategory(request);
+    }
+
+    @GetMapping
+    public Mono<ResponseEntity<Mono<ContentPage<Category>>>> getAllCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "false") boolean isAsc
+    ) {
+        return Mono.just(
+                ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(categoryService.findAllCategories(page, size, sortBy, isAsc))
+        ).defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
 }

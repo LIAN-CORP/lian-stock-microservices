@@ -3,6 +3,7 @@ package com.liancorp.lianstock.domain;
 import com.liancorp.lianstock.domain.api.usecase.CategoryUseCase;
 import com.liancorp.lianstock.domain.exception.CategoryAlreadyExistsException;
 import com.liancorp.lianstock.domain.model.Category;
+import com.liancorp.lianstock.domain.model.ContentPage;
 import com.liancorp.lianstock.domain.spi.ICategoryPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -67,6 +69,45 @@ class CategoryUseCaseTest {
 
         verify(categoryPersistencePort, times(1)).categoryExistsByName(category.getName());
         verify(categoryPersistencePort, never()).saveCategory(category);
+    }
+
+    @Test
+    void shouldReturnAllCategories() {
+        //Arrange
+        int page = 0;
+        int size = 5;
+        String sortBy = "name";
+        boolean isAsc = true;
+        Category category = new Category(UUID.randomUUID(), "test", "test desc");
+        List<Category> categories = List.of(category);
+        ContentPage<Category> expectedContentPage = new ContentPage<>(
+                1,
+                1L,
+                page,
+                size,
+                true,
+                true,
+                categories
+        );
+        when(categoryPersistencePort.findAllCategories(page, size, sortBy, isAsc)).thenReturn(Mono.just(expectedContentPage));
+
+        //Act
+        Mono<ContentPage<Category>> result = categoryUseCase.findAllCategories(page, size, sortBy, isAsc);
+
+        //Assert
+        StepVerifier.create(result)
+                .expectNextMatches(res ->
+                            res.getTotalPage().equals(expectedContentPage.getTotalPage())
+                            && res.getTotalElements().equals(expectedContentPage.getTotalElements())
+                            && res.getPageNumber().equals(expectedContentPage.getPageNumber())
+                            && res.getPageSize().equals(expectedContentPage.getPageSize())
+                            && res.isFirst() == expectedContentPage.isFirst()
+                            && res.isLast() == expectedContentPage.isLast()
+                            && res.getContent().equals(categories)
+                )
+                .verifyComplete();
+
+        verify(categoryPersistencePort, times(1)).findAllCategories(page, size, sortBy, isAsc);
     }
 
 }
