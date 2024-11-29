@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 
 @RestControllerAdvice
@@ -13,6 +14,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(CategoryAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
