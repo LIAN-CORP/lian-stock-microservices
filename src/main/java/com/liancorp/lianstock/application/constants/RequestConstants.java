@@ -10,4 +10,5 @@ public class RequestConstants {
     public static final String CATEGORY_DESCRIPTION_MUST_NOT_BE_NULL = "Category description must not be null";
     public static final String CATEGORY_NAME_IS_ABOVE_THE_LIMIT = "Category name is above the limit";
     public static final String CATEGORY_DESCRIPTION_IS_ABOVE_THE_LIMIT = "Category description is above the limit";
+    public static final String CATEGORY_UUID_MUST_NOT_BE_NULL = "Category uuid must not be null";
 }

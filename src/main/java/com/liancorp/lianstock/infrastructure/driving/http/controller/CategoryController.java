@@ -1,6 +1,7 @@
 package com.liancorp.lianstock.infrastructure.driving.http.controller;
 
 import com.liancorp.lianstock.application.dto.request.CategoryRequest;
+import com.liancorp.lianstock.application.dto.request.CategoryUpdateRequest;
 import com.liancorp.lianstock.application.services.CategoryService;
 import com.liancorp.lianstock.domain.model.Category;
 import com.liancorp.lianstock.domain.model.ContentPage;
@@ -33,6 +34,12 @@ public class CategoryController {
         return Mono.just(
                 ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(categoryService.findAllCategories(page, size, sortBy, isAsc))
         ).defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping
+    public Mono<ResponseEntity<Void>> updateCategory(@Valid @RequestBody Mono<CategoryUpdateRequest> request) {
+        return request.flatMap(req -> categoryService.updateCategory(Mono.just(req)))
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
 }
