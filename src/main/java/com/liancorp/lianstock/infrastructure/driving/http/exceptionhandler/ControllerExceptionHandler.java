@@ -18,6 +18,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(WebExchangeBindException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
