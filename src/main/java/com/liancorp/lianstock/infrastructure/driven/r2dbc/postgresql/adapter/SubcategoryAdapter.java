@@ -2,7 +2,6 @@ package com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.adapter;
 
 import com.liancorp.lianstock.domain.model.Subcategory;
 import com.liancorp.lianstock.domain.spi.ISubcategoryPersistencePort;
-import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.entity.CategoryEntity;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.entity.SubcategoryEntity;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.mapper.ISubcategoryEntityMapper;
 import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.repository.ISubcategoryRepository;
@@ -16,7 +15,7 @@ public class SubcategoryAdapter implements ISubcategoryPersistencePort {
     private final ISubcategoryRepository subcategoryRepository;
 
     @Override
-    public Mono<Subcategory> saveCategory(Subcategory subcategory) {
+    public Mono<Subcategory> saveSubcategory(Subcategory subcategory) {
         Mono<SubcategoryEntity> response = subcategoryRepository.save(subcategoryEntityMapper.toEntityFromModel(subcategory));
         return response.map(subcategoryEntityMapper::toModelFromEntity);
     }

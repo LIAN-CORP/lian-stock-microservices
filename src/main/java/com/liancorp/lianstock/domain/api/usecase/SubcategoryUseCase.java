@@ -29,7 +29,7 @@ public class SubcategoryUseCase implements ISubcategoryServicePort {
                                 if (!categoryExists) {
                                     return Mono.error(new CategoryAlreadyExistsException(ErrorConstants.CATEGORY_NOT_EXISTS_WITH_UUID +subcategory.getCategoryId().toString()));
                                 }
-                                return subcategoryPersistencePort.saveCategory(subcategory);
+                                return subcategoryPersistencePort.saveSubcategory(subcategory);
                             });
                 });
     }
