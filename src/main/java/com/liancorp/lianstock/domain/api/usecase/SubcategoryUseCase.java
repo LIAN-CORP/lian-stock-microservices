@@ -3,7 +3,7 @@ package com.liancorp.lianstock.domain.api.usecase;
 import com.liancorp.lianstock.domain.api.ICategoryServicePort;
 import com.liancorp.lianstock.domain.api.ISubcategoryServicePort;
 import com.liancorp.lianstock.domain.constants.ErrorConstants;
-import com.liancorp.lianstock.domain.exception.CategoryAlreadyExistsException;
+import com.liancorp.lianstock.domain.exception.CategoryIdDoNotExists;
 import com.liancorp.lianstock.domain.exception.SubcategoryAlreadyExistsException;
 import com.liancorp.lianstock.domain.model.Subcategory;
 import com.liancorp.lianstock.domain.spi.ISubcategoryPersistencePort;
@@ -27,7 +27,7 @@ public class SubcategoryUseCase implements ISubcategoryServicePort {
                     return categoryServicePort.categoryExistsById(subcategory.getCategoryId())
                             .flatMap(categoryExists -> {
                                 if (!categoryExists) {
-                                    return Mono.error(new CategoryAlreadyExistsException(ErrorConstants.CATEGORY_NOT_EXISTS_WITH_UUID +subcategory.getCategoryId().toString()));
+                                    return Mono.error(new CategoryIdDoNotExists(ErrorConstants.CATEGORY_NOT_EXISTS_WITH_UUID +subcategory.getCategoryId().toString()));
                                 }
                                 return subcategoryPersistencePort.saveSubcategory(subcategory);
                             });
