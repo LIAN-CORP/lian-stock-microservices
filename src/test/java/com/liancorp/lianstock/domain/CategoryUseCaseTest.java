@@ -110,4 +110,19 @@ class CategoryUseCaseTest {
         verify(categoryPersistencePort, times(1)).findAllCategories(page, size, sortBy, isAsc);
     }
 
+    @Test
+    void shouldReturnBooleanIfCategoryExist() {
+        //Arrange
+        UUID categoryId = UUID.randomUUID();
+        when(categoryUseCase.categoryExistsById(categoryId)).thenReturn(Mono.just(true));
+
+        //Act
+        Mono<Boolean> result = categoryUseCase.categoryExistsById(categoryId);
+
+        //Assert
+        StepVerifier.create(result)
+                .expectNext(true)
+                .verifyComplete();
+    }
+
 }

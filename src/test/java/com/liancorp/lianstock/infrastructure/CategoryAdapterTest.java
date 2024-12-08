@@ -9,6 +9,7 @@ import com.liancorp.lianstock.infrastructure.driven.r2dbc.postgresql.repository.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -65,11 +66,11 @@ class CategoryAdapterTest {
         String name = "test";
         when(categoryRepository.existsByName(name)).thenReturn(Mono.just(true));
         //Act
-        Mono<Boolean> resutl = categoryAdapter.categoryExistsByName(name);
+        Mono<Boolean> result = categoryAdapter.categoryExistsByName(name);
 
         //Assert
-        StepVerifier.create(resutl)
-                .expectNextMatches(res -> res.equals(Boolean.TRUE))
+        StepVerifier.create(result)
+                .expectNextMatches(res -> res.equals(true))
                 .verifyComplete();
 
         verify(categoryRepository, times(1)).existsByName(name);
@@ -149,6 +150,21 @@ class CategoryAdapterTest {
         verify(categoryRepository, times(1)).findAllBy(pageable);
         verify(categoryRepository, times(1)).count();
         verify(categoryEntityMapper, times(1)).toModelFromEntity(categoryEntity);
+    }
+
+    @Test
+    void shouldReturnAnyBooleanWhenCategoryExistsByIdMethodIsInvoke() {
+        //Arrange
+        UUID categoryId = UUID.randomUUID();
+        when(categoryAdapter.categoryExistsById(categoryId)).thenReturn(Mono.just(true));
+        //Act
+        Mono<Boolean> result = categoryAdapter.categoryExistsById(categoryId);
+        //Assert
+        StepVerifier.create(result)
+                .expectNextMatches(res -> res.equals(true))
+                .verifyComplete();
+
+        verify(categoryRepository, times(1)).existsById(categoryId);
     }
 
 }

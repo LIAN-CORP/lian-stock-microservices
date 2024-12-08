@@ -1,6 +1,7 @@
 package com.liancorp.lianstock.application;
 
 import com.liancorp.lianstock.application.dto.request.CategoryRequest;
+import com.liancorp.lianstock.application.dto.request.CategoryUpdateRequest;
 import com.liancorp.lianstock.application.mapper.CategoryMapper;
 import com.liancorp.lianstock.application.services.CategoryService;
 import com.liancorp.lianstock.domain.api.ICategoryServicePort;
@@ -93,6 +94,22 @@ class CategoryServiceTest {
                 .verifyComplete();
 
         verify(categoryServicePort, times(1)).findAllCategories(page, size, sortBy, isAsc);
+    }
+
+    @Test
+    void shouldUpdateSuccessfully(){
+        //Arrange
+        CategoryUpdateRequest request = new CategoryUpdateRequest(UUID.randomUUID().toString(),"test", "test");
+        Mono<CategoryUpdateRequest> monoRequest = Mono.just(request);
+        var requestModel = new Category(UUID.fromString(request.id()), "test", "test");
+        when(categoryMapper.toModelFromUpdateRequest(request)).thenReturn(requestModel);
+        when(categoryServicePort.saveCategory(requestModel)).thenReturn(Mono.just(requestModel));
+        //Act
+        Mono<Void> result = categoryService.updateCategory(monoRequest);
+        //Assert
+        StepVerifier.create(result)
+                .expectComplete()
+                .verify();
     }
 
 }
