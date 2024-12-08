@@ -11,4 +11,10 @@ public class RequestConstants {
     public static final String CATEGORY_NAME_IS_ABOVE_THE_LIMIT = "Category name is above the limit";
     public static final String CATEGORY_DESCRIPTION_IS_ABOVE_THE_LIMIT = "Category description is above the limit";
     public static final String CATEGORY_UUID_MUST_NOT_BE_NULL = "Category uuid must not be null";
+    public static final int SUBCATEGORY_NAME_MAX_LENGTH = 50;
+    public static final int SUBCATEGORY_DESCRIPTION_MAX_LENGTH = 200;
+    public static final String SUBCATEGORY_NAME_MUST_NOT_BE_NULL = "Subcategory name must not be null";
+    public static final String SUBCATEGORY_DESCRIPTION_MUST_NOT_BE_NULL = "Subcategory description must not be null";
+    public static final String SUBCATEGORY_NAME_IS_ABOVE_THE_LIMIT = "Subcategory name is above the limit";
+    public static final String SUBCATEGORY_DESCRIPTION_IS_ABOVE_THE_LIMIT = "Subcategory description is above the limit";
 }

@@ -9,6 +9,8 @@ import com.liancorp.lianstock.domain.spi.ICategoryPersistencePort;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class CategoryUseCase implements ICategoryServicePort {
 
@@ -28,5 +30,10 @@ public class CategoryUseCase implements ICategoryServicePort {
     @Override
     public Mono<ContentPage<Category>> findAllCategories(int page, int size, String sortBy, boolean isAsc) {
         return categoryPersistencePort.findAllCategories(page, size, sortBy, isAsc);
+    }
+
+    @Override
+    public Mono<Boolean> categoryExistsById(UUID id) {
+        return categoryPersistencePort.categoryExistsById(id);
     }
 }

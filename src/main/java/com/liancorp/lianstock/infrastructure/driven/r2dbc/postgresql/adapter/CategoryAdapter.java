@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class CategoryAdapter implements ICategoryPersistencePort {
 
@@ -55,6 +57,11 @@ public class CategoryAdapter implements ICategoryPersistencePort {
                     );
                     return contentPage;
                 });
+    }
+
+    @Override
+    public Mono<Boolean> categoryExistsById(UUID id) {
+        return categoryRepository.existsById(id);
     }
 
 }
